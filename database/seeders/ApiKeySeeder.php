@@ -21,14 +21,14 @@ class ApiKeySeeder extends Seeder
                 'name' => 'Aplikasi Todo',
                 'token' => Crypt::encryptString(Uuid::uuid4()),
                 'is_active' => true,
-                'user_id' => 2,
+                'user_id' => 1,
             ],
             [
                 'id' => 2,
                 'name' => 'Aplikasi Forum',
                 'token' => Crypt::encryptString(Uuid::uuid4()),
                 'is_active' => false,
-                'user_id' => 2,
+                'user_id' => 1,
             ],
         ];
 
