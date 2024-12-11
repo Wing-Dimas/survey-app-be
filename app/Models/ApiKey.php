@@ -2,16 +2,32 @@
 
 namespace App\Models;
 
+use App\Casts\Encryptable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class ApiKey extends Model
 {
+
     protected $fillable = [
         'name',
         'token',
         'is_active',
         'user_id',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'token' => Encryptable::class,
+        ];
+    }
+
 
     /**
      * Get the user that owns the ApiKey
@@ -29,5 +45,12 @@ class ApiKey extends Model
      */
     public function responses(){
         return $this->hasMany(Response::class, 'api_key_id');
+    }
+
+    public function scopeFilter(Builder $query, array $filters) : void
+    {
+        $query->when($filters['search'] ?? false, function($query, $search){
+            return $query->where('name', 'like', '%' . $search . '%');
+        });
     }
 }

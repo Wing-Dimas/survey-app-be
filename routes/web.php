@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ApiKeyController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -15,4 +16,9 @@ Route::middleware(['auth'])->group(function(){
     // Dasboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::delete('/signout', [AdminController::class, 'destroy'])->name('auth.signout');
+
+    // Api Key
+    Route::prefix('dashboard')->group(function(){
+        Route::resource('api-key', ApiKeyController::class);
+    });
 });
