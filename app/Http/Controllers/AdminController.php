@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegistrationRequest;
+use App\Models\ApiKey;
+use App\Models\FormSubmission;
+use App\Models\Response;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +31,15 @@ class AdminController extends Controller
             return redirect()->route('auth.show.signin');
         }
 
-        return view('pages.index');
+        $applications = ApiKey::count();
+        $responses = Response::count();
+        $formSubmissions = FormSubmission::count();
+
+        return view('pages.index', compact(
+            'applications',
+            'responses',
+            'formSubmissions'
+        ));
     }
 
     public function showLogin()
