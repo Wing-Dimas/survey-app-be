@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\ApiKey;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Crypt;
 use Ramsey\Uuid\Uuid;
 
 class ApiKeySeeder extends Seeder
@@ -19,20 +18,21 @@ class ApiKeySeeder extends Seeder
             [
                 'id' => 1,
                 'name' => 'Aplikasi Todo',
-                'token' => Crypt::encryptString(Uuid::uuid4()),
-                'is_active' => true,
+                'token' => Uuid::uuid4(),
+                'active' => true,
                 'user_id' => 1,
             ],
             [
                 'id' => 2,
                 'name' => 'Aplikasi Forum',
-                'token' => Crypt::encryptString(Uuid::uuid4()),
-                'is_active' => false,
+                'token' => Uuid::uuid4(),
+                'active' => false,
                 'user_id' => 1,
             ],
         ];
 
-        ApiKey::insert($apiKeys);
-
+        foreach ($apiKeys as $apiKey) {
+            ApiKey::create($apiKey);
+        }
     }
 }

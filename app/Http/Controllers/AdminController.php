@@ -16,7 +16,7 @@ class AdminController extends Controller
     public function index()
     {
         if(Auth::check()){
-            return redirect("/");
+            return redirect("/dashboard");
         }
         if($this->noRegisteredUsers()){
             return redirect()->route('auth.show.signup');

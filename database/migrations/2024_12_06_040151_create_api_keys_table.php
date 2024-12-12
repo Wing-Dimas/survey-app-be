@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('token');
-            $table->boolean('is_active')->default(true);
+            $table->boolean('active')->default(true);
             $table->foreignId('user_id')->index('fk_api_keys_to_users');
             $table->timestamps();
         });

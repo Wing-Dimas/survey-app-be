@@ -12,7 +12,7 @@ class ApiKey extends Model
     protected $fillable = [
         'name',
         'token',
-        'is_active',
+        'active',
         'user_id',
     ];
 
