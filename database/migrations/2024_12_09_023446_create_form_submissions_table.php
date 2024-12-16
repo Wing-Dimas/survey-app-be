@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("field_name");
             $table->enum("type", ['text', 'number', 'checkbox', 'radio', 'select', 'textarea']);
             $table->text("question");
+            $table->boolean('required')->default(false);
             $table->timestamps();
         });
     }

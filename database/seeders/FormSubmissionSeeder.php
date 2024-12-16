@@ -34,6 +34,8 @@ class FormSubmissionSeeder extends Seeder
             ],
         ];
 
-        FormSubmission::insert($formSubmissions);
+        foreach ($formSubmissions as $formSubmission) {
+            FormSubmission::create($formSubmission);
+        }
     }
 }

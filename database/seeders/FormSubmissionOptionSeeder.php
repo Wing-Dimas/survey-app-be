@@ -18,12 +18,10 @@ class FormSubmissionOptionSeeder extends Seeder
             [
                 'id' => 1,
                 'form_submission_id' => 1,
-                'required' => true,
             ],
             [
                 'id' => 2,
                 'form_submission_id' => 2,
-                'required' => true,
             ],
         ];
 
@@ -31,7 +29,6 @@ class FormSubmissionOptionSeeder extends Seeder
         FormSubmissionOption::create([
             'id' => 3,
             'form_submission_id' => 3,
-            'required' => true,
             'min' => 1,
             'max' => 5,
         ]);

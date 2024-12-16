@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('value')->nullable();
             $table->integer('min')->nullable();
             $table->integer('max')->nullable();
-            $table->boolean('required')->default(false);
             $table->timestamps();
         });
     }

@@ -12,7 +12,6 @@ class FormSubmissionOption extends Model
         'value',
         'min',
         'max',
-        'required',
     ];
 
     /**

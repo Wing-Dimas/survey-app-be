@@ -28,6 +28,8 @@ class ResponseSeeder extends Seeder
             ],
         ];
 
-        Response::insert($responses);
+        foreach ($responses as $response) {
+            Response::create($response);
+        }
     }
 }

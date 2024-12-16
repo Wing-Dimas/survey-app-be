@@ -52,7 +52,9 @@ class ResponseAnswerSeeder extends Seeder
             ],
         ];
 
-        ResponseAnswer::insert($responseAnswer);
+        foreach ($responseAnswer as $responseAnswer) {
+            ResponseAnswer::create($responseAnswer);
+        }
 
     }
 }
