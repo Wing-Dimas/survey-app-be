@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\FormSubmissionController;
+use App\Http\Controllers\ResponseController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -20,10 +21,13 @@ Route::middleware(['auth'])->group(function(){
 
     Route::prefix('dashboard')->group(function(){
         // Api Key
-        Route::resource('api-key', ApiKeyController::class);
+        Route::resource('api-key', ApiKeyController::class)->except('show');
 
         // Form Submission
-        Route::resource('form-submission', FormSubmissionController::class);
+        Route::resource('form-submission', FormSubmissionController::class)->except('show');
+
+        // Response
+        Route::resource('response', ResponseController::class)->only('index', 'show', 'destroy');
 
     });
 });
