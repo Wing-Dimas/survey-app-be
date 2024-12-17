@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('response_answers', function (Blueprint $table) {
             $table->id();
-            $table->text('answer');
+            $table->text('answer')->nullable();
             $table->foreignId('response_id')->index('fk_response_answers_to_responses');
             $table->foreignId('form_submission_id')->index('fk_response_answers_to_form_submissions');
             $table->timestamps();
