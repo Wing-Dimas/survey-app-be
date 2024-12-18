@@ -6,12 +6,12 @@
     <section>
         <div class="mb-12">
             <h1 class="text-2xl text-gray-600 font-semibold">Api Key</h1>
-            @include('partials.breadcrumb', ['breadcrumbs' => ['Dashboard', 'Api Key', 'Edit Aplikasi']])
+            @include('partials.breadcrumb', ['breadcrumbs' => ['Dashboard', 'Api Key', 'Edit Application']])
         </div>
 
         <div class="space-y-4 md:space-y-6">
             <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                Edit Aplikasi
+                Edit Application
             </h1>
             <form action="{{ route('api-key.update', $apiKey->id) }}" method="POST" class="space-y-4 md:space-y-6" >
                 @csrf
@@ -31,7 +31,7 @@
                     </label>
                 </div>
                 <button type="submit" class="text-white bg-sky-600 hover:bg-sky-700 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">
-                    Update Aplikasi
+                    Update Application
                 </button>
             </form>
         </div>

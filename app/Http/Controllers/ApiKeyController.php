@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ResponsesExport;
 use App\Http\Requests\StoreApiKeyRequest;
 use App\Http\Requests\UpdateApiKeyRequest;
 use App\Models\ApiKey;
+use App\Models\FormSubmission;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 use Ramsey\Uuid\Uuid;
 
 class ApiKeyController extends Controller
@@ -55,12 +61,43 @@ class ApiKeyController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+    public function export(ApiKey $apiKey) {
+        try {
+            $formSubmissions = FormSubmission::all();
+
+            $headers = ['nomor','email', 'name'];
+            $headers = array_merge($headers, $formSubmissions->pluck('field_name')->toArray());
+
+            $responded = $apiKey->responses;
+            $data = [];
+            foreach($responded as $key => $response) {
+                $respondedAnswers = $response->answers;
+                $answers = [
+                    'nomor' => $key + 1,
+                    'email' => $response->email,
+                    'name' => $response->name
+                ];
+                foreach($respondedAnswers as $respondedAnswer) {
+                    $answers[$respondedAnswer->form_submission->field_name] = $respondedAnswer->answer;
+                }
+
+                $data[] = $answers;
+            }
+
+            // it should be the same with headers
+            foreach($data as $key => $row) {
+                $missing_columns = array_diff($headers, array_keys($row));
+                foreach($missing_columns as $column) {
+                    $data[$key][$column] = null;
+                }
+            }
+
+            $filename = "responses-". Carbon::now()->format('Y-m-d') . ".xlsx";
+            return Excel::download(new ResponsesExport($data, $headers), $filename);
+
+        } catch (\Throwable $th) {
+            return redirect()->route('api-key.index')->with('error', 'Export failed');
+        }
     }
 
     /**

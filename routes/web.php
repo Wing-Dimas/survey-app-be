@@ -22,6 +22,7 @@ Route::middleware(['auth'])->group(function(){
     Route::prefix('dashboard')->group(function(){
         // Api Key
         Route::resource('api-key', ApiKeyController::class)->except('show');
+        Route::get('api-key/{apiKey}/export', [ApiKeyController::class, 'export'])->name('api-key.export');
 
         // Form Submission
         Route::resource('form-submission', FormSubmissionController::class)->except('show');

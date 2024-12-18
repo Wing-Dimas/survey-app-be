@@ -6,12 +6,12 @@
     <section>
         <div class="mb-12">
             <h1 class="text-2xl text-gray-600 font-semibold">Api Key</h1>
-            @include('partials.breadcrumb', ['breadcrumbs' => ['Dashboard', 'Api Key', 'Tambah Aplikasi']])
+            @include('partials.breadcrumb', ['breadcrumbs' => ['Dashboard', 'Api Key', 'Add Application']])
         </div>
 
         <div class="space-y-4 md:space-y-6">
             <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                Tambah Aplikasi
+                Add Application
             </h1>
             <form action="{{ route('api-key.store') }}" method="POST" class="space-y-4 md:space-y-6" >
                 @csrf
@@ -22,7 +22,7 @@
                         <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
-                <button type="submit" class="text-white bg-sky-600 hover:bg-sky-700 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">Tambah Aplikasi</button>
+                <button type="submit" class="text-white bg-sky-600 hover:bg-sky-700 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">Add Application</button>
             </form>
         </div>
 

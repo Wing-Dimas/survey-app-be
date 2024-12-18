@@ -43,7 +43,7 @@
             <h1 class="text-2xl text-gray-600 font-semibold">Api Key</h1>
             @include('partials.breadcrumb', ['breadcrumbs' => ['Dashboard', 'Api Key']])
         </div>
-        <section class="bg-gray-50 dark:bg-gray-900 overflow-hidden">
+        <section class="bg-gray-50 dark:bg-gray-900">
             <div class="max-w-screen-xl">
                 <!-- Start coding here -->
                 <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
@@ -66,7 +66,7 @@
                                 <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                 </svg>
-                                Add product
+                                Add Application
                             </a>
                         </div>
                     </div>
@@ -77,6 +77,7 @@
                                     <th scope="col" class="px-4 py-3">Nama Aplikasi</th>
                                     <th scope="col" class="px-4 py-3 w-96">Token Api Key</th>
                                     <th scope="col" class="px-4 py-3 text-center">Status</th>
+                                    <th scope="col" class="px-4 py-3 text-center">Total Responded</th>
                                     <th scope="col" class="px-4 py-3">
                                         <span class="sr-only">Actions</span>
                                     </th>
@@ -110,11 +111,14 @@
                                             </div>
                                         </td>
                                         {{-- STATUS --}}
-                                        <td class="px-4 py-3">
+                                        <td class="px-4 py-3 text-center">
                                             <span class="inline-flex items-center text-xs font-medium">
                                                 <span class="w-2 h-2 me-3 rounded-full {{ $apiKey->active ? 'bg-green-500' : 'bg-red-500' }}"></span>
                                                 {{ $apiKey->active ? 'Active' : 'Inactive' }}
                                             </span>
+                                        </td>
+                                        <td class="px-4 py-3 text-center">
+                                            {{ $apiKey->responses()->count() }}
                                         </td>
                                         {{-- ACTION --}}
                                         <td class="px-4 py-3 flex items-center gap-2 justify-end">
@@ -131,6 +135,9 @@
                                                 <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="{{ $apiKey->id }}-dropdown-button">
                                                     <li>
                                                         <a href="{{ route('api-key.edit', $apiKey->id) }}" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ route('api-key.export', $apiKey->id) }}" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Export Excel</a>
                                                     </li>
                                                 </ul>
                                                 <div class="py-1">
