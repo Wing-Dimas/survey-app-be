@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class UserLoginRequest extends FormRequest
@@ -31,7 +32,6 @@ class UserLoginRequest extends FormRequest
         ];
     }
 
-
     /**
      * Attempt to authenticate the request's credentials.
      *
@@ -42,6 +42,7 @@ class UserLoginRequest extends FormRequest
     public function authenticate()
     {
         if(! Auth::attempt($this->only("email", "password"), $this->boolean('remember')) ){
+            Log::warning("User failed to sign in", ["email" => $this->email]);
             throw ValidationException::withMessages([
                 'email' => trans("auth.failed")
             ]);

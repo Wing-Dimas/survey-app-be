@@ -8,6 +8,7 @@ use App\Http\Resources\FormSubmissionCollection;
 use App\Http\Resources\FormSubmissionResource;
 use App\Models\FormSubmission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class FormSubmissionController extends Controller
 {
@@ -21,7 +22,8 @@ class FormSubmissionController extends Controller
         try {
             $formSubmissions = FormSubmission::with('options')->get();
             return ResponseFormatter::success(new FormSubmissionCollection($formSubmissions),'Get form submissions successfully');
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
+            Log::error(flattenError($th));
             return ResponseFormatter::error(null,'Internal server error', 500)->setStatusCode(500);
         }
     }

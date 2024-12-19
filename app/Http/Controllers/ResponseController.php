@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ResponseController extends Controller
 {
@@ -39,13 +41,17 @@ class ResponseController extends Controller
      */
     public function destroy(Response $response)
     {
+        Log::info("user attempt to delete response", ['user' => Auth::user()->username, 'response' => $response->id]);
         DB::beginTransaction();
         try {
             $response->delete();
             DB::commit();
+            Log::info("user delete response successfully", ['user' => Auth::user()->username, 'response' => $response->id]);
             return redirect()->route('response.index')->with('success', 'Response deleted successfully');
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::warning("user delete response failed", ['user' => Auth::user()->username, 'response' => $response->id]);
+            Log::error(flattenError($th), ['user' => Auth::user()->username, 'response' => $response->id]);
             return redirect()->route('response.index')->with('error', 'Response deleted failed');
         }
     }

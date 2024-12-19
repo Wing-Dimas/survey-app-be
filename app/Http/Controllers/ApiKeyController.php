@@ -45,6 +45,7 @@ class ApiKeyController extends Controller
      */
     public function store(StoreApiKeyRequest $request)
     {
+        Log::info("user attempt to create api key", $request->all());
         $data = $request->validated();
         $data['token'] = Uuid::uuid4();
         $data['user_id'] = $request->user()->id;
@@ -52,16 +53,20 @@ class ApiKeyController extends Controller
         DB::beginTransaction();
 
         try {
-            ApiKey::create($data);
+            $apikey = ApiKey::create($data);
             DB::commit();
+            Log::info("user create a new api key successfully", ['user' => Auth::user()->username, 'id' => $apikey->id]);
             return redirect()->route('api-key.index')->with('success', 'API Key created successfully');
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::warning("Api key could not be created", ['user' => Auth::user()->username, 'data' => $request->all()]);
+            Log::error(flattenError($th), $request->all());
             return redirect()->route('api-key.index')->with('error', 'API Key created failed');
         }
     }
 
     public function export(ApiKey $apiKey) {
+        Log::info("user attempt to export responses to excel", ['user' => Auth::user()->username, 'id' => $apiKey->id]);
         try {
             $formSubmissions = FormSubmission::all();
 
@@ -93,10 +98,12 @@ class ApiKeyController extends Controller
             }
 
             $filename = "responses-". Carbon::now()->format('Y-m-d') . ".xlsx";
+            Log::info("user export responses to excel successfully", ['user' => Auth::user()->username, 'api_key' => $apiKey->id]);
             return Excel::download(new ResponsesExport($data, $headers), $filename);
-
         } catch (\Throwable $th) {
-            return redirect()->route('api-key.index')->with('error', 'Export failed');
+            Log::warning("user export responses to excel failed", ['user' => Auth::user()->username, 'api_key' => $apiKey->id]);
+            Log::error(flattenError($th), ['user' => Auth::user()->username, 'api_key' => $apiKey->id]);
+            return redirect()->route('api-key.index')->with('error', 'Excel export failed');
         }
     }
 
@@ -115,6 +122,7 @@ class ApiKeyController extends Controller
      */
     public function update(UpdateApiKeyRequest $request, ApiKey $apiKey)
     {
+        Log::info("user attempt to update api key", ['user' => Auth::user()->username, 'api_key' => $apiKey->id]);
         $data = $request->validated();
         $data['active'] = $request->has('active');
 
@@ -123,9 +131,12 @@ class ApiKeyController extends Controller
         try {
             $apiKey->update($data);
             DB::commit();
+            Log::info("user update api key successfully", ['user' => Auth::user()->username, 'api_key' => $apiKey->id]);
             return redirect()->route('api-key.index')->with('success', 'API Key updated successfully');
         }catch (\Throwable $th) {
             DB::rollBack();
+            Log::warning("user update api key failed", ['user' => Auth::user()->username, 'api_key' => $apiKey->id]);
+            Log::error(flattenError($th), ['user' => Auth::user()->username, 'api_key' => $apiKey->id]);
             return redirect()->route('api-key.index')->with('error', 'API Key updated failed');
         }
     }
@@ -135,13 +146,17 @@ class ApiKeyController extends Controller
      */
     public function destroy(ApiKey $apiKey)
     {
+        Log::info("user attempt to delete api key", ['user' => Auth::user()->username, 'api_key' => $apiKey->id]);
         DB::beginTransaction();
         try {
             $apiKey->delete();
             DB::commit();
+            Log::info("user delete api key successfully", ['user' => Auth::user()->username, 'api_key' => $apiKey->id]);
             return redirect()->route('api-key.index')->with('success', 'API Key deleted successfully');
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::warning("user delete api key failed", ['user' => Auth::user()->username, 'api_key' => $apiKey->id]);
+            Log::error(flattenError($th), ['user' => Auth::user()->username, 'api_key' => $apiKey->id]);
             return redirect()->route('api-key.index')->with('error', 'API Key deleted failed');
         }
     }

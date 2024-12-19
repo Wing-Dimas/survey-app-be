@@ -7,7 +7,9 @@ use App\Http\Requests\UpdateFieldRequest;
 use App\Models\FormSubmission;
 use App\Models\FormSubmissionOption;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FormSubmissionController extends Controller
 {
@@ -39,11 +41,10 @@ class FormSubmissionController extends Controller
      */
     public function store(StoreFieldRequest $request)
     {
-        $data = $request->validated();
-
+        Log::info("user attempt to create form submission", ['user' => Auth::user()->username ,'data' => $request->all()]);
         DB::beginTransaction();
-
         try {
+            $data = $request->validated();
             $formSubmission = FormSubmission::create($data);
 
             // check if type is select, checkbox, or radio
@@ -71,9 +72,12 @@ class FormSubmissionController extends Controller
             }
 
             DB::commit();
+            Log::info("user create a new form submission successfully", ['user' => Auth::user()->username, 'form_submission' => $formSubmission->id]);
             return redirect()->route('form-submission.index')->with('success', 'Form submission created successfully');
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::warning("form submission could not be created", ['user' => Auth::user()->username, 'data' => $request->all()]);
+            Log::error(flattenError($th), ['user' => Auth::user()->username, 'data' => $request->all()]);
             return redirect()->route('form-submission.index')->with('error', 'Form submission created failed');
         }
     }
@@ -101,11 +105,11 @@ class FormSubmissionController extends Controller
      */
     public function update(UpdateFieldRequest $request, FormSubmission $formSubmission)
     {
-        $data = $request->validated();
-
+        Log::info("user attempt to update form submission", ['user' => Auth::user()->username, 'form_submission' => $formSubmission->id]);
         DB::beginTransaction();
-
         try {
+            $data = $request->validated();
+
             $formSubmission->update($data);
 
             // check if type is select, checkbox, or radio
@@ -135,9 +139,12 @@ class FormSubmissionController extends Controller
             }
 
             DB::commit();
+            Log::info("user update form submission successfully", ['user' => Auth::user()->username, 'form_submission' => $formSubmission->id]);
             return redirect()->route('form-submission.index')->with('success', 'Form submission updated successfully');
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::warning("user update form submission failed", ['user' => Auth::user()->username, 'form_submission' => $formSubmission->id]);
+            Log::error(flattenError($th), ['user' => Auth::user()->username, 'form_submission' => $formSubmission->id]);
             return redirect()->route('form-submission.index')->with('error', 'Form submission updated failed');
         }
     }
@@ -147,13 +154,17 @@ class FormSubmissionController extends Controller
      */
     public function destroy(FormSubmission $formSubmission)
     {
+        Log::info("user attempt to delete form submission", ['user' => Auth::user()->username, 'form_submission' => $formSubmission->id]);
         DB::beginTransaction();
         try {
             $formSubmission->delete();
             DB::commit();
+            Log::info("user delete form submission successfully", ['user' => Auth::user()->username, 'form_submission' => $formSubmission->id]);
             return redirect()->route('form-submission.index')->with('success', 'Form submission deleted successfully');
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::warning("user delete form submission failed", ['user' => Auth::user()->username, 'form_submission' => $formSubmission->id]);
+            Log::error(flattenError($th), ['user' => Auth::user()->username, 'form_submission' => $formSubmission->id]);
             return redirect()->route('form-submission.index')->with('error', 'Form submission deleted failed');
         }
     }

@@ -10,6 +10,7 @@ use App\Models\Response;
 use App\Models\ResponseAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ResponseController extends Controller
@@ -22,6 +23,7 @@ class ResponseController extends Controller
      */
     public function store(UserResponseRequest $request)
     {
+        Log::info("user attempt to submit form", ['app_name' => $request->app_name, 'api_key' => $request->api_key_id,'email' => $request->email]);
         DB::beginTransaction();
         try{
             // Parsing request
@@ -65,10 +67,12 @@ class ResponseController extends Controller
             }
 
             DB::commit();
+            Log::info("user submit form successfully", ['app_name' => $request->app_name, 'api_key' => $request->api_key_id,'email' => $request->email]);
             return ResponseFormatter::success(null,'Submit form successfully', 201);
-        }catch(\Exception $e){
+        }catch(\Throwable $th){
             DB::rollBack();
-            dd($e->getMessage());
+            Log::warning("user submit form failed", ['app_name' => $request->app_name, 'api_key' => $request->api_key_id,'email' => $request->email]);
+            Log::error(flattenError($th), ['app_name' => $request->app_name, 'api_key' => $request->api_key_id,'email' => $request->email]);
             return ResponseFormatter::error(null,"Internal server error", 500);
         }
     }
