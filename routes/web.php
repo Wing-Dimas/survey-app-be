@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\FormSubmissionController;
 use App\Http\Controllers\ResponseController;
+use App\Http\Controllers\SurveyController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,12 @@ Route::post('/signin', [AdminController::class, 'signin'])->name('auth.store.sig
 Route::get('/signup', [AdminController::class, 'showRegristration'])->name('auth.show.signup');
 Route::post('/signup', [AdminController::class, 'signup'])->name('auth.store.signup');
 
+// GUEST
+// Route::get('/survey/{survey_token:token}', [SurveyController::class, 'survey'])->name('survey.index');
+Route::get('/survey', [SurveyController::class, 'index'])->name('survey.index');
+Route::post('/survey', [SurveyController::class, 'store'])->name('survey.store');
+
+// ADMIN
 Route::middleware(['auth'])->group(function(){
     // Dasboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');

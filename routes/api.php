@@ -25,3 +25,10 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1'], f
         Route::apiResource('response', 'ResponseController')->only('store');
     });
 });
+
+// api v2
+Route::group(['prefix' => 'v2', 'namespace' => 'App\Http\Controllers\Api\V2'], function(){
+    Route::middleware('api-key')->group(function(){
+        Route::apiResource('form-submission', 'FormSubmissionController')->only('index');
+    });
+});
