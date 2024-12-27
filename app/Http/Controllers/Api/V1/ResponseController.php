@@ -8,7 +8,6 @@ use App\Http\Requests\UserResponseRequest;
 use App\Models\FormSubmission;
 use App\Models\Response;
 use App\Models\ResponseAnswer;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -23,6 +22,24 @@ class ResponseController extends Controller
      */
     public function store(UserResponseRequest $request)
     {
+        // cek application json
+        if ($request->header('Content-Type') !== 'application/json') {
+            Log::warning("user attempt to submit form with invalid content type", ['app_name' => $request->app_name, 'api_key' => $request->api_key_id]);
+            return ResponseFormatter::error(null,"Content-Type must be application/json", 400);
+        }
+
+        // cek apakah ada credential dan resposes uuser
+        if (!$request->has('email') || !$request->has('name') || !$request->has('responses')) {
+            Log::warning("user attempt to submit form with invalid request", ['app_name' => $request->app_name, 'api_key' => $request->api_key_id]);
+            return ResponseFormatter::error(null,"email, name and credentials is required", 400);
+        }
+
+        // cek jika ada data pada responses
+        if($request->has('responses') && count($request->responses) == 0){
+            Log::warning("user attempt to submit form with empty responses", ['app_name' => $request->app_name, 'api_key' => $request->api_key_id]);
+            return ResponseFormatter::error(null,"responses is required", 400);
+        }
+
         Log::info("user attempt to submit form", ['app_name' => $request->app_name, 'api_key' => $request->api_key_id,'email' => $request->email]);
         DB::beginTransaction();
         try{
@@ -76,6 +93,7 @@ class ResponseController extends Controller
             return ResponseFormatter::error(null,"Internal server error", 500);
         }
     }
+
 
     /**
      * Generate rules for validator based on FormSubmission model.
