@@ -47,6 +47,22 @@ class ApiKey extends Model
         return $this->hasMany(Response::class, 'api_key_id');
     }
 
+    /**
+     * Get the SurveyToken for the ApiKey
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function token(){
+        return $this->hasMany(SurveyToken::class, 'api_key_id');
+    }
+
+    /**
+     * Scope a query to filter the ApiKeys by the given filters.
+     *
+     * @param Builder $query
+     * @param array $filters
+     * @return void
+     */
     public function scopeFilter(Builder $query, array $filters) : void
     {
         $query->when($filters['search'] ?? false, function($query, $search){
