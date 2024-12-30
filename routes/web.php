@@ -17,8 +17,8 @@ Route::post('/signup', [AdminController::class, 'signup'])->name('auth.store.sig
 
 // GUEST
 // Route::get('/survey/{survey_token:token}', [SurveyController::class, 'survey'])->name('survey.index');
-Route::get('/survey', [SurveyController::class, 'index'])->name('survey.index');
-Route::post('/survey', [SurveyController::class, 'store'])->name('survey.store');
+Route::get('/survey/{survey_token:token}', [SurveyController::class, 'index'])->name('survey.index');
+Route::post('/survey/{survey_token:token}', [SurveyController::class, 'store'])->name('survey.store');
 
 // ADMIN
 Route::middleware(['auth'])->group(function(){

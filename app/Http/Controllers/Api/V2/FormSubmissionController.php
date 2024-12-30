@@ -38,4 +38,9 @@ class FormSubmissionController extends Controller
             return ResponseFormatter::error(null, 'Internal server error', 500);
         }
     }
+
+    public function store(Request $request)
+    {
+
+    }
 }
