@@ -153,10 +153,6 @@ class SurveyController extends Controller
             Log::info("user submit form successfully", ['app_name' => $apiKey->name, 'api_key' => $apiKey->id, 'email' => $request->email]);
             return view('pages.survey.success');
         }
-        catch (HttpException $e) {
-            DB::rollBack();
-            throw new HttpException($e->getStatusCode(), $e->getMessage());
-        }
         catch (\Throwable $th) {
             DB::rollBack();
             Log::error(flattenError($th));

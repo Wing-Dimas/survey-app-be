@@ -103,34 +103,12 @@ class ResponseController extends Controller
      */
     protected function getRules()
     {
-        $formSubmissions = FormSubmission::with('options')->get();
+        $formSubmissionsRule = FormSubmission::all()->pluck('rule', 'field_name')->toArray();
         $rules = [
             'email' => 'required|email', // required and must be valid email
             'name' => 'required|string', // required and must be string
         ];
 
-        // generate rules for each form
-        foreach($formSubmissions as $form){
-            if($form->type == 'number'){
-                // required|numeric|min:<min>|max:<max>
-                $rules[$form->field_name] = [
-                    $form->required ? 'required' : '',
-                    "min:" . ($form->options[0]->min ?? 0),
-                    "max:" . ($form->options[0]->max ?? 0),
-                    "numeric"
-                ];
-            }else if(in_array($form->type, ['checkbox', 'radio', 'select'])){
-                // required|in:<values>
-                $rules[$form->field_name] = [
-                    $form->required ? 'required' : '',
-                    "in:" . implode(',', $form->options->pluck('value')->toArray())
-                ];
-            }else{
-                // required
-                $rules[$form->field_name] = $form->required ? 'required' : '';
-            }
-        }
-
-        return $rules;
+        return array_merge($rules, $formSubmissionsRule);
     }
 }

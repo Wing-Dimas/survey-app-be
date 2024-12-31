@@ -22,33 +22,13 @@ class StoreSurveyRequest extends FormRequest
      */
     public function rules(): array
     {
-        $formSubmissions = FormSubmission::with('options')->get();
+        $formSubmissions = FormSubmission::all()->pluck('rule', 'field_name')->toArray();
         $rules = [
             'email' => 'required|email', // required and must be valid email
             'name' => 'required|string', // required and must be string
         ];
 
-        // generate rules for each field
-        foreach($formSubmissions as $field){
-            if($field->type == 'number'){
-                // required|numeric|min:<min>|max:<max>
-                $rules[$field->field_name] = [
-                    $field->required ? 'required' : '',
-                    "min:" . ($field->options[0]->min ?? 0),
-                    "max:" . ($field->options[0]->max ?? 0),
-                    "numeric"
-                ];
-            }else if(in_array($field->type, ['checkbox', 'radio', 'select'])){
-                // required|in:<values>
-                $rules[$field->field_name] = [
-                    $field->required ? 'required' : '',
-                    "in:" . implode(',', $field->options->pluck('value')->toArray())
-                ];
-            }else{
-                // required
-                $rules[$field->field_name] = $field->required ? 'required' : '';
-            }
-        }
+        $rules = array_merge($rules, $formSubmissions);
 
         return $rules;
     }

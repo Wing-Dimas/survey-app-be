@@ -12,6 +12,7 @@ class FormSubmission extends Model
         'type',
         'question',
         'required',
+        'rule'
     ];
 
     /**
