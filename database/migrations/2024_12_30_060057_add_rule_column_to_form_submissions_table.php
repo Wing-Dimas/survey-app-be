@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('form_submissions', function (Blueprint $table) {
-            $table->text('rule')->default('required')->after('required');
+            $table->text('rule')->after('required');
         });
     }
 
